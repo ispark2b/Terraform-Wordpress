@@ -1,6 +1,11 @@
 #!/bin/bash
 # AUTOMATIC WORDPRESS INSTALLER IN  AWS LINUX 2 AMI
 
+#Install SSM Agent
+cd /tmp
+sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+sudo systemctl enable amazon-ssm-agent
+sudo systemctl start amazon-ssm-agent
 
 #Change these values and keep in safe place
 db_root_password=${db_root_password}
