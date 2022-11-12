@@ -23,7 +23,8 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set aws_region $AWS_REGION
       - name: Setup Terraform State
-         run: bash ./set-state.sh 
+         run: bash ./create-state.sh
+         working-directory: ./TF 
       - name: Terraform init
           id: init
          run: terraform init --reconfigureworking-directory
