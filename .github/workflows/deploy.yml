@@ -1,0 +1,38 @@
+name: Terraform CI/CD
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: {{ secret.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: {{ secret.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: {{ secret.AWS_REGION }}
+
+jobs:
+  deploy-infra:
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Setup AWS Credentials and Region
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set aws_region $AWS_REGION
+      - name: Setup Terraform State
+         run: bash ./set-state.sh 
+      - name: Terraform init
+          id: init
+         run: terraform init --reconfigureworking-directory
+      - name: Terraform plan
+          id: plan
+         run: terraform plan --out=PLAN
+        working-directory: ./TF
+      - name: Terraform apply
+        id: apply
+        run: terraform apply PLAN --auto-approve
+        working-directory: ./TF
+         
