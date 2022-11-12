@@ -3,10 +3,10 @@
 
 
 #Change these values and keep in safe place
-db_root_password=PassWord4-root
-db_username=wordpress_user
-db_user_password=PassWord4-user
-db_name=wordpress_db
+db_root_password=${db_root_password}
+db_username=${db_username}
+db_user_password=${db_user_password}
+db_name=${db_name}
 
 # install LAMP Server
 yum update -y
@@ -33,8 +33,9 @@ systemctl restart php-fpm.service
 
 #and download mysql package to yum  and install mysql server from yum
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
 yum localinstall -y https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-yum install -y mysql-community-server
+#yum install -y mysql-community-server
 
 
 
@@ -59,13 +60,13 @@ temppassword=$(grep 'temporary password' /var/log/mysqld.log | grep -o ".\{12\}$
 chown  mysql:mysql /var/log/mysqld.log
 
 #change root password to db_root_password
- mysql -p$temppassword --connect-expired-password  -e "SET PASSWORD FOR root@localhost = PASSWORD('$db_root_password');FLUSH PRIVILEGES;" 
+ mysql -p$temppassword --connect-expired-password  -e "SET PASSWORD FOR root@${db_endpoint} = PASSWORD('$db_root_password');FLUSH PRIVILEGES;" 
 mysql -p'$db_root_password'  -e "DELETE FROM mysql.user WHERE User='';"
 mysql -p'$db_root_password' -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
 
 
 # Create database user and grant privileges
-mysql -u root -p"$db_root_password" -e "GRANT ALL PRIVILEGES ON *.* TO '$db_username'@'localhost' IDENTIFIED BY '$db_user_password';FLUSH PRIVILEGES;"
+mysql -u root -p"$db_root_password" -e "GRANT ALL PRIVILEGES ON *.* TO '$db_username'@'${db_endpoint}' IDENTIFIED BY '$db_user_password';FLUSH PRIVILEGES;"
 
 # Create database
 mysql -u $db_username -p"$db_user_password" -e "CREATE DATABASE $db_name;"

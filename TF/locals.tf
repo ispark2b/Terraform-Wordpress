@@ -9,11 +9,11 @@ locals {
   wordpress_version = var.wordpress_version
 
   #RDS Config
-  db_name = "wordpress_db"
-  db_username = "wordpress"
-  db_password = "supersecretpassword123"
-  db_port = "3306"
-  db_instance_size = "db.t2.micro"
+  db_name = var.db_name
+  db_username = var.db_username
+  db_password = var.db_password
+  db_port = var.db_port
+  db_instance_size = var.db_instance_size
   
   #Access Logs
   s3_lb_logs_bucket_name = "${local.resource_prefix}-${local.account_id}-ALB_LOGS"

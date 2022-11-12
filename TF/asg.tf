@@ -13,4 +13,8 @@ resource "aws_autoscaling_group" "main-asg" {
     id      = aws_launch_template.wordpress-instance.id
     version = "$Latest"
   }
+  depends_on = [
+    module.db,
+    module.main
+  ]
 }
